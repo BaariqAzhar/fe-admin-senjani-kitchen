@@ -1,0 +1,25 @@
+.container{
+  position: relative;
+}
+.backgroundA {
+  background-color: rgb(29, 29, 29);
+  height: 175px;
+}
+.backgroundB {
+  height: 50px;
+}
+.logo {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+}
+.onClikRegister{
+  color: #108EE9;
+}
+.onClickToLogin{
+  position: absolute;
+  top: 30px;
+  left: 16px;
+  font-size: 18px;
+}
