@@ -13,17 +13,26 @@ import axios from "axios";
 import { useState, useEffect, useDebugValue } from "react";
 import { Link, useHistory } from "react-router-dom";
 
-import UrlApi from "../UrlApi";
-import "./Home.css";
-import backgroundImg from "./background.svg";
+import UrlApi from ".././UrlApi";
 
-function Home() {
+function BaseTabelJadwalMenu() {
   let history = useHistory();
-  
-  // ! atas hapus
+
+  const [dataState, setDataState] = useState([]);
+  const processApiShowAllMenu = () => {
+    axios
+      .post(`${UrlApi}menu/showAllMenu`)
+      .then((respone) => setDataState(respone.data));
+  };
+  useEffect(() => {
+    processApiShowAllMenu();
+  }, []);
+  useEffect(() => {
+    console.log(dataState);
+  }, [dataState]);
+
   const [open, setOpen] = useState(false);
-  const onOpenChange = (...args) => {
-    console.log(args);
+  const onOpenChange = () => {
     setOpen(!open);
   };
   const Sidebar = (
@@ -68,29 +77,9 @@ function Home() {
         open={open}
         onOpenChange={onOpenChange}
       >
-        <div>
-          <img className="backgroundImg" src={backgroundImg} alt="" />
-        </div>
-        <WingBlank>
-          <Card>
-            <Card.Header title="Menu" />
-            <Card.Body>
-              <Button type="ghost">Verifikasi Bukti Pembayaran</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Jadwal Menu</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Pesanan</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Paket Kupon</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Pelanggan</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Kupon Pelanggan</Button>
-            </Card.Body>
-          </Card>
-        </WingBlank>
+        
       </Drawer>
     </div>
   );
 }
-export default Home;
+export default BaseTabelJadwalMenu;
