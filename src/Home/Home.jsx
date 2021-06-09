@@ -16,58 +16,14 @@ import { Link, useHistory } from "react-router-dom";
 import UrlApi from "../UrlApi";
 import "./Home.css";
 import backgroundImg from "./background.svg";
+import DrawerComponents from "./DrawerComponents";
 
 function Home() {
   let history = useHistory();
-  
-  // ! atas hapus
-  const [open, setOpen] = useState(false);
-  const onOpenChange = (...args) => {
-    console.log(args);
-    setOpen(!open);
-  };
-  const Sidebar = (
-    <List>
-      <List.Item
-        onClick={() => {
-          history.push("/");
-        }}
-      >
-        Beranda
-      </List.Item>
-      <List.Item>Verifikasi Bukti Pembayaran</List.Item>
-      <List.Item
-        onClick={() => {
-          history.push("/TabelJadwalMenu");
-        }}
-      >
-        Tabel Jadwal Menu
-      </List.Item>
-      <List.Item>Tabel Pesanan</List.Item>
-      <List.Item>Tabel Paket Kupon</List.Item>
-      <List.Item>Tabel Pelanggan</List.Item>
-      <List.Item>Tabel Kupon Pelanggan</List.Item>
-    </List>
-  );
 
-  return (
-    <div>
-      <NavBar
-        mode="light"
-        icon={<Icon type="ellipsis" />}
-        onLeftClick={onOpenChange}
-      >
-        Beranda
-      </NavBar>
-      <Drawer
-        className="my-drawer"
-        style={{ minHeight: document.documentElement.clientHeight }}
-        enableDragHandle
-        contentStyle={{ color: "#A6A6A6", textAlign: "center" }}
-        sidebar={Sidebar}
-        open={open}
-        onOpenChange={onOpenChange}
-      >
+  const content = (
+    <div className="grid">
+      <div className="container">
         <div>
           <img className="backgroundImg" src={backgroundImg} alt="" />
         </div>
@@ -75,21 +31,97 @@ function Home() {
           <Card>
             <Card.Header title="Menu" />
             <Card.Body>
-              <Button type="ghost">Verifikasi Bukti Pembayaran</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Jadwal Menu</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Pesanan</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Paket Kupon</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Pelanggan</Button>
-              <WhiteSpace size="lg" />
-              <Button type="ghost">Tabel Kupon Pelanggan</Button>
+              <List>
+                <List.Item
+                  arrow="horizontal"
+                  onClick={() => {
+                    history.push("/BuktiPembayaran");
+                  }}
+                >
+                  Verifikasi Bukti Pembayaran
+                  <List.Item.Brief>
+                    Memeriksa Bukti Pembayaran <br />
+                    Yang telah Diunggah oleh Pelanggan
+                  </List.Item.Brief>
+                </List.Item>
+                <WhiteSpace/>
+                <List.Item
+                  arrow="horizontal"
+                  onClick={() => {
+                    history.push("/TabelJadwalMenu");
+                  }}
+                >
+                  Tabel Jadwal Menu
+                  <List.Item.Brief>
+                    Melihat maupun Mengedit Jadwal <br />
+                    Menu yang Telah Dibuat <br />
+                    Sebelumnya dan Menambahkan <br /> Menu Baru
+                  </List.Item.Brief>
+                </List.Item>
+                <WhiteSpace/>
+                <List.Item
+                  arrow="horizontal"
+                  onClick={() => {
+                    history.push("/TabelPesanan");
+                  }}
+                >
+                  Tabel Pesanan
+                  <List.Item.Brief>
+                    Melihat maupun Mengedit Hasil <br />
+                    Pemesanan / Penukaran Kupon <br />
+                    oleh Pelanggan
+                  </List.Item.Brief>
+                </List.Item>
+                <WhiteSpace/>
+                <List.Item
+                  arrow="horizontal"
+                  onClick={() => {
+                    history.push("/TabelPaketKupon");
+                  }}
+                >
+                  Tabel Paket Kupon
+                  <List.Item.Brief>
+                    Melihat maupun Mengedit Paket <br />
+                    Kupon yang Telah Dibuat
+                  </List.Item.Brief>
+                </List.Item>
+                <WhiteSpace/>
+                <List.Item
+                  arrow="horizontal"
+                  onClick={() => {
+                    history.push("/TabelPelanggan");
+                  }}
+                >
+                  Tabel Pelanggan
+                  <List.Item.Brief>
+                    Melihat maupun Mengedit Pelanggan <br />
+                    yang Telah Terdaftar
+                  </List.Item.Brief>
+                </List.Item>
+                <WhiteSpace/>
+                <List.Item
+                  arrow="horizontal"
+                  onClick={() => {
+                    history.push("/TabelKuponPelanggan");
+                  }}
+                >
+                  Tabel Kupon Pelanggan
+                  <List.Item.Brief>
+                    Melihat maupun Mengedit Kupon <br />
+                    yang Telah Dibeli Oleh Pelanggan
+                  </List.Item.Brief>
+                </List.Item>
+              </List>
             </Card.Body>
           </Card>
         </WingBlank>
-      </Drawer>
+      </div>
+    </div>
+  );
+
+  return (
+    <div>
+      <DrawerComponents title="Beranda" content={content} />
     </div>
   );
 }

@@ -59,14 +59,17 @@ function TabelJadwalMenu() {
     {
       title: "Nama Menu",
       dataIndex: "nama_menu",
+      sorter: (a, b) => a.nama_menu.localeCompare(b.nama_menu),
     },
     {
       title: "Keterangan Menu",
       dataIndex: "keterangan_menu",
+      sorter: (a, b) => a.keterangan_menu.localeCompare(b.keterangan_menu),
     },
     {
       title: "Lauk Tambahan",
       dataIndex: "lauk_tambahan_menu",
+      sorter: (a, b) => a.lauk_tambahan_menu.localeCompare(b.lauk_tambahan_menu),
     },
     {
       title: "Foto Menu",
@@ -109,23 +112,6 @@ function TabelJadwalMenu() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
-  const content = (
-    <div>
-      <Card>
-        <Card.Body>
-          <Button
-            onClick={() => showCreateModal()}
-            type="primary"
-            style={{ width: "150px" }}
-          >
-            Tambah Menu
-          </Button>
-          <Table columns={columns} dataSource={dataState} />
-        </Card.Body>
-      </Card>
-    </div>
-  );
 
   // ! Create Modal
   const [tanggal, setTanggal] = useState("");
@@ -305,6 +291,26 @@ function TabelJadwalMenu() {
       }
     }
   };
+
+  const content = (
+    <div>
+      <Card>
+        <Card.Body>
+          <Button
+            onClick={() => showCreateModal()}
+            type="primary"
+            style={{ width: "150px" }}
+          >
+            Tambah Menu
+          </Button>
+          <Table
+            columns={columns}
+            dataSource={dataState}
+          />
+        </Card.Body>
+      </Card>
+    </div>
+  );
 
   return (
     <div>
