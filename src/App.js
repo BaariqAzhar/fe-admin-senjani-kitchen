@@ -5,8 +5,12 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Home from "./Home/Home";
 import Login from "./Auth/Login";
-import BaseTabelJadwalMenu from "./TabelJadwalMenu/BaseTabelJadwalMenu";
 import TabelJadwalMenu from "./TabelJadwalMenu/TabelJadwalMenu";
+import TabelPelanggan from "./TabelPelanggan/TabelPelanggan";
+import TabelPaketKupon from "./TabelPaketKupon/TabelPaketKupon";
+import TabelKuponPelanggan from "./TabelKuponPelanggan/TabelKuponPelanggan";
+import TabelPesanan from "./TabelPesanan/TabelPesanan";
+import BuktiPembayaran from "./BuktiPembayaran/BuktiPembayaran";
 
 function App() {
   return (
@@ -18,8 +22,20 @@ function App() {
         <Route path="/TabelJadwalMenu">
           <TabelJadwalMenu />
         </Route>
-        <Route path="/TabelJadwalMenu1">
-          <BaseTabelJadwalMenu />
+        <Route path="/TabelPelanggan">
+          <TabelPelanggan />
+        </Route>
+        <Route path="/TabelPaketKupon">
+          <TabelPaketKupon />
+        </Route>
+        <Route path="/TabelKuponPelanggan">
+          <TabelKuponPelanggan />
+        </Route>
+        <Route path="/TabelPesanan">
+          <TabelPesanan />
+        </Route>
+        <Route path="/BuktiPembayaran">
+          <BuktiPembayaran />
         </Route>
         <Route path="/">
           <Home />

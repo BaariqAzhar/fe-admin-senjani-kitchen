@@ -25,24 +25,61 @@ function DrawerComponents(props) {
   const Sidebar = (
     <List>
       <List.Item
+        arrow="horizontal"
         onClick={() => {
           history.push("/");
         }}
       >
         Beranda
       </List.Item>
-      <List.Item>Verifikasi Bukti Pembayaran</List.Item>
       <List.Item
+        arrow="horizontal"
+        onClick={() => {
+          history.push("/BuktiPembayaran");
+        }}
+      >
+        Verifikasi Bukti Pembayaran
+      </List.Item>
+      <List.Item
+        arrow="horizontal"
         onClick={() => {
           history.push("/TabelJadwalMenu");
         }}
       >
         Tabel Jadwal Menu
       </List.Item>
-      <List.Item>Tabel Pesanan</List.Item>
-      <List.Item>Tabel Paket Kupon</List.Item>
-      <List.Item>Tabel Pelanggan</List.Item>
-      <List.Item>Tabel Kupon Pelanggan</List.Item>
+      <List.Item
+        arrow="horizontal"
+        onClick={() => {
+          history.push("/TabelPesanan");
+        }}
+      >
+        Tabel Pesanan
+      </List.Item>
+      <List.Item
+        arrow="horizontal"
+        onClick={() => {
+          history.push("/TabelPaketKupon");
+        }}
+      >
+        Tabel Paket Kupon
+      </List.Item>
+      <List.Item
+        arrow="horizontal"
+        onClick={() => {
+          history.push("/TabelPelanggan");
+        }}
+      >
+        Tabel Pelanggan
+      </List.Item>
+      <List.Item
+        arrow="horizontal"
+        onClick={() => {
+          history.push("/TabelKuponPelanggan");
+        }}
+      >
+        Tabel Kupon Pelanggan
+      </List.Item>
     </List>
   );
 
