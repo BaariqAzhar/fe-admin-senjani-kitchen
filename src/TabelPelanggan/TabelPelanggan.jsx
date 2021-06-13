@@ -10,6 +10,7 @@ import moment from "moment";
 import DrawerComponents from "../Home/DrawerComponents";
 import UrlApi from "../UrlApi";
 import waktuMenu from "../Function/waktuMenu";
+import IsLogin from "../Auth/IsLogin";
 
 function TabelPelanggan() {
   const [dataState, setDataState] = useState([]);
@@ -164,6 +165,7 @@ function TabelPelanggan() {
 
   return (
     <div>
+      <IsLogin />
       <DrawerComponents title="Tabel Pelanggan" content={content} />
       <Modal
         title="Edit Menu"

@@ -13,6 +13,7 @@ import waktuMenu from "../Function/waktuMenu";
 import jenisPaketKupon from "../Function/jenisPaketKupon";
 import statusKupon from "../Function/statusKupon";
 import caraPembayaran from "../Function/caraPembayaran";
+import IsLogin from "../Auth/IsLogin";
 
 function TabelKuponPelanggan() {
   const [dataState, setDataState] = useState([]);
@@ -319,27 +320,46 @@ function TabelKuponPelanggan() {
       data.append("bukti_pembayaran", editBuktiPembayaran);
 
       let res;
-      if (typeof editBuktiPembayaran === "string") {
+      console.log(editBuktiPembayaran);
+      if (
+        typeof editBuktiPembayaran === "string" ||
+        editBuktiPembayaran === null
+      ) {
         console.log("non foto, edit foto adalah string");
         res = await axios.post(
           `${UrlApi}kuponpelanggan/adminUpdateKuponPelangganNoFoto`,
           data
         );
+        console.log(res);
+        if (res.data.status === "success") {
+          alert("Data Kupon Pelanggan Berhasil Diubah");
+        } else {
+          alert("Data Kupon Pelanggan Tidak Berhasil Diubah");
+        }
+        setConfirmLoadingEdit(false);
+        setIsEditModalVisible(false);
+        window.location.reload(false);
       } else {
-        res = await axios.post(
-          `${UrlApi}kuponpelanggan/adminUpdateKuponPelanggan`,
-          data
-        );
+        if (editBuktiPembayaran.type.includes("image")) {
+          res = await axios.post(
+            `${UrlApi}kuponpelanggan/adminUpdateKuponPelanggan`,
+            data
+          );
+          console.log(res);
+          if (res.data.status === "success") {
+            alert("Data Kupon Pelanggan Berhasil Diubah");
+          } else {
+            alert("Data Kupon Pelanggan Tidak Berhasil Diubah");
+          }
+          setConfirmLoadingEdit(false);
+          setIsEditModalVisible(false);
+          window.location.reload(false);
+        } else {
+          alert(
+            "Edit Menu Gagal, Foto Menu Harus Berbentuk Gambar (jpg, png, dll)"
+          );
+        }
       }
-      console.log(res);
-      if (res.data.status === "success") {
-        alert("Data Kupon Pelanggan Berhasil Diubah");
-      } else {
-        alert("Data Kupon Pelanggan Tidak Berhasil Diubah");
-      }
-      setConfirmLoadingEdit(false);
-      setIsEditModalVisible(false);
-      window.location.reload(false);
     }
   };
 
@@ -355,6 +375,7 @@ function TabelKuponPelanggan() {
 
   return (
     <div>
+      <IsLogin />
       <DrawerComponents title="Tabel Kupon Pelanggan" content={content} />
 
       {/* foto modal */}
@@ -416,8 +437,8 @@ function TabelKuponPelanggan() {
               onChange={onChangeEditStatusKupon}
             >
               <Radio.Button value="belum_dibayar">Belum Dibayar</Radio.Button>
-              <Radio.Button value="menunggu_dibayar">
-                Menunggu Dibayar
+              <Radio.Button value="menunggu_diverifikasi">
+                Menunggu Diverifikasi
               </Radio.Button>
               <Radio.Button value="sudah_dibayar">Sudah Dibayar</Radio.Button>
               <Radio.Button value="gagal_dibayar">Gagal Dibayar</Radio.Button>

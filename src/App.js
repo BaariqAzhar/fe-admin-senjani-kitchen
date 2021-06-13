@@ -11,6 +11,7 @@ import TabelPaketKupon from "./TabelPaketKupon/TabelPaketKupon";
 import TabelKuponPelanggan from "./TabelKuponPelanggan/TabelKuponPelanggan";
 import TabelPesanan from "./TabelPesanan/TabelPesanan";
 import BuktiPembayaran from "./BuktiPembayaran/BuktiPembayaran";
+import Pengaturan from "./Pengaturan/Pengaturan";
 
 function App() {
   return (
@@ -36,6 +37,9 @@ function App() {
         </Route>
         <Route path="/BuktiPembayaran">
           <BuktiPembayaran />
+        </Route>
+        <Route path="/Pengaturan">
+          <Pengaturan />
         </Route>
         <Route path="/">
           <Home />

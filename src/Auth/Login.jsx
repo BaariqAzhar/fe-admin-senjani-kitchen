@@ -11,6 +11,15 @@ function Login() {
   let history = useHistory();
   const qs = require("qs");
 
+  useEffect(() => {
+    return history.listen(() => {
+      // listen
+      if (history.action === "POP") {
+        history.replace("/Login");
+      }
+    });
+  });
+
   const [dataApi, setDataApi] = useState();
   const [dataAdmin, setDataAdmin] = useState();
   const [isLogin, setIsLogin] = useState(false);
@@ -26,11 +35,8 @@ function Login() {
     );
     setDataApi(data);
     if ((await data.data.status) === "success") {
-      setDataAdmin(await data.data.dataAdmin[0]);
-      localStorage.setItem(
-        "admin",
-        JSON.stringify(await data.data.dataAdmin[0])
-      );
+      setDataAdmin(await data.data.dataAdmin);
+      localStorage.setItem("admin", JSON.stringify(await data.data.dataAdmin));
       setIsLogin(true);
       localStorage.setItem("isLogin", JSON.stringify(true));
       console.log("login success");
@@ -79,38 +85,40 @@ function Login() {
   };
 
   return (
-    <div>
-      <div className="container">
-        <div>
-          <div className="backgroundA"></div>
-          <div className="backgroundB"></div>
+    <div className="grid">
+      <div className="baseContainer">
+        <div className="container">
+          <div>
+            <div className="backgroundA"></div>
+            <div className="backgroundB"></div>
+          </div>
+          <div className="logo">
+            <img src={Logo} alt="" />
+          </div>
         </div>
-        <div className="logo">
-          <img src={Logo} alt="" />
-        </div>
+        <WingBlank>
+          <h3>Masuk Akun Admin Senjanimu</h3>
+          <InputItem
+            placeholder="abc@email.com"
+            type="email"
+            onChange={onChangeEmail}
+          >
+            Email
+          </InputItem>
+          <InputItem
+            placeholder="*****"
+            type="password"
+            onChange={onChangePassword}
+          >
+            Password
+          </InputItem>
+          <WhiteSpace size="md" />
+          <Button type="primary" onClick={loginProcess}>
+            Masuk
+          </Button>
+          <br /> <button onClick={clearLocalStorage}>clear localStorage</button>
+        </WingBlank>
       </div>
-      <WingBlank>
-        <h3>Masuk Akun Admin Senjanimu</h3>
-        <InputItem
-          placeholder="abc@email.com"
-          type="email"
-          onChange={onChangeEmail}
-        >
-          Email
-        </InputItem>
-        <InputItem
-          placeholder="*****"
-          type="password"
-          onChange={onChangePassword}
-        >
-          Password
-        </InputItem>
-        <WhiteSpace size="md" />
-        <Button type="primary" onClick={loginProcess}>
-          Masuk
-        </Button>
-        <br /> <button onClick={clearLocalStorage}>clear localStorage</button>
-      </WingBlank>
     </div>
   );
 }
