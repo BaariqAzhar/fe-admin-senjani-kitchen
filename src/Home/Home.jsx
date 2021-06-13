@@ -17,6 +17,7 @@ import UrlApi from "../UrlApi";
 import "./Home.css";
 import backgroundImg from "./background.svg";
 import DrawerComponents from "./DrawerComponents";
+import IsLogin from "../Auth/IsLogin";
 
 function Home() {
   let history = useHistory();
@@ -44,7 +45,7 @@ function Home() {
                     Yang telah Diunggah oleh Pelanggan
                   </List.Item.Brief>
                 </List.Item>
-                <WhiteSpace/>
+                <WhiteSpace />
                 <List.Item
                   arrow="horizontal"
                   onClick={() => {
@@ -58,7 +59,7 @@ function Home() {
                     Sebelumnya dan Menambahkan <br /> Menu Baru
                   </List.Item.Brief>
                 </List.Item>
-                <WhiteSpace/>
+                <WhiteSpace />
                 <List.Item
                   arrow="horizontal"
                   onClick={() => {
@@ -72,7 +73,7 @@ function Home() {
                     oleh Pelanggan
                   </List.Item.Brief>
                 </List.Item>
-                <WhiteSpace/>
+                <WhiteSpace />
                 <List.Item
                   arrow="horizontal"
                   onClick={() => {
@@ -85,7 +86,7 @@ function Home() {
                     Kupon yang Telah Dibuat
                   </List.Item.Brief>
                 </List.Item>
-                <WhiteSpace/>
+                <WhiteSpace />
                 <List.Item
                   arrow="horizontal"
                   onClick={() => {
@@ -98,7 +99,7 @@ function Home() {
                     yang Telah Terdaftar
                   </List.Item.Brief>
                 </List.Item>
-                <WhiteSpace/>
+                <WhiteSpace />
                 <List.Item
                   arrow="horizontal"
                   onClick={() => {
@@ -111,6 +112,19 @@ function Home() {
                     yang Telah Dibeli Oleh Pelanggan
                   </List.Item.Brief>
                 </List.Item>
+                <WhiteSpace />
+                <List.Item
+                  arrow="horizontal"
+                  onClick={() => {
+                    history.push("/Pengaturan");
+                  }}
+                >
+                  Pengaturan
+                  <List.Item.Brief>
+                    Melihat informasi akun admin <br />
+                    dan menambahkan akun admin baru
+                  </List.Item.Brief>
+                </List.Item>
               </List>
             </Card.Body>
           </Card>
@@ -121,6 +135,7 @@ function Home() {
 
   return (
     <div>
+      <IsLogin />
       <DrawerComponents title="Beranda" content={content} />
     </div>
   );

@@ -10,6 +10,7 @@ import moment from "moment";
 import DrawerComponents from "../Home/DrawerComponents";
 import UrlApi from "../UrlApi";
 import waktuMenu from "../Function/waktuMenu";
+import IsLogin from "../Auth/IsLogin";
 
 function TabelJadwalMenu() {
   const [dataState, setDataState] = useState([]);
@@ -69,7 +70,8 @@ function TabelJadwalMenu() {
     {
       title: "Lauk Tambahan",
       dataIndex: "lauk_tambahan_menu",
-      sorter: (a, b) => a.lauk_tambahan_menu.localeCompare(b.lauk_tambahan_menu),
+      sorter: (a, b) =>
+        a.lauk_tambahan_menu.localeCompare(b.lauk_tambahan_menu),
     },
     {
       title: "Foto Menu",
@@ -160,25 +162,32 @@ function TabelJadwalMenu() {
       alert("Semua form harus terisi");
       setConfirmLoading(false);
     } else {
-      const data = new FormData();
-      data.append("tanggal_menu", tanggal);
-      data.append("waktu_menu", waktu);
-      data.append("nama_menu", nama);
-      data.append("keterangan_menu", keterangan);
-      data.append("lauk_tambahan_menu", laukTambahan);
-      data.append("foto_menu", foto);
-      const res = await axios.post(`${UrlApi}menu/createMenu`, data);
-      console.log(res);
-      if (res.data.status === "success") {
-        alert("Menu baru sukses terkrim");
-        setConfirmLoading(false);
-        setIsCreateModalVisible(false);
-        window.location.reload(false);
+      if (foto.type.includes("image")) {
+        const data = new FormData();
+        data.append("tanggal_menu", tanggal);
+        data.append("waktu_menu", waktu);
+        data.append("nama_menu", nama);
+        data.append("keterangan_menu", keterangan);
+        data.append("lauk_tambahan_menu", laukTambahan);
+        data.append("foto_menu", foto);
+        const res = await axios.post(`${UrlApi}menu/createMenu`, data);
+        console.log(res);
+        if (res.data.status === "success") {
+          alert("Menu baru sukses terkrim");
+          setConfirmLoading(false);
+          setIsCreateModalVisible(false);
+          window.location.reload(false);
+        } else {
+          alert("Menu gagal terkirim");
+          setConfirmLoading(false);
+          setIsCreateModalVisible(false);
+          window.location.reload(false);
+        }
       } else {
-        alert("Menu gagal terkirim");
+        alert(
+          "Tambah Menu Gagal, Foto Menu Harus Berbentuk Gambar (jpg, png, dll)"
+        );
         setConfirmLoading(false);
-        setIsCreateModalVisible(false);
-        window.location.reload(false);
       }
     }
   };
@@ -272,21 +281,28 @@ function TabelJadwalMenu() {
           window.location.reload(false);
         }
       } else {
-        data.append("foto_menu", editFoto);
-        console.log("update pakai foto, edit foto bukan string");
-        console.log(data);
-        const res = await axios.post(`${UrlApi}menu/updateMenu`, data);
-        console.log(res);
-        if (res.data.status === "success") {
-          alert("Menu Berhasil Diubah");
-          setConfirmLoadingEdit(false);
-          setIsEditModalVisible(false);
-          window.location.reload(false);
+        if (editFoto.type.includes("image")) {
+          data.append("foto_menu", editFoto);
+          console.log("update pakai foto, edit foto bukan string");
+          console.log(data);
+          const res = await axios.post(`${UrlApi}menu/updateMenu`, data);
+          console.log(res);
+          if (res.data.status === "success") {
+            alert("Menu Berhasil Diubah");
+            setConfirmLoadingEdit(false);
+            setIsEditModalVisible(false);
+            window.location.reload(false);
+          } else {
+            alert("Menu Tidak Berhasil Diubah");
+            setConfirmLoadingEdit(false);
+            setIsEditModalVisible(false);
+            window.location.reload(false);
+          }
         } else {
-          alert("Menu Tidak Berhasil Diubah");
+          alert(
+            "Edit Menu Gagal, Foto Menu Harus Berbentuk Gambar (jpg, png, dll)"
+          );
           setConfirmLoadingEdit(false);
-          setIsEditModalVisible(false);
-          window.location.reload(false);
         }
       }
     }
@@ -303,10 +319,7 @@ function TabelJadwalMenu() {
           >
             Tambah Menu
           </Button>
-          <Table
-            columns={columns}
-            dataSource={dataState}
-          />
+          <Table columns={columns} dataSource={dataState} />
         </Card.Body>
       </Card>
     </div>
@@ -314,6 +327,7 @@ function TabelJadwalMenu() {
 
   return (
     <div>
+      <IsLogin />
       <DrawerComponents title="Tabel Jadwal Menu" content={content} />
       <Modal
         title="Foto Menu"

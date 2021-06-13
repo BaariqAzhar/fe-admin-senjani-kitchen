@@ -14,6 +14,7 @@ import jenisPaketKupon from "../Function/jenisPaketKupon";
 import statusKupon from "../Function/statusKupon";
 import statusPesanan from "../Function/statusPesanan";
 import caraPembayaran from "../Function/caraPembayaran";
+import IsLogin from "../Auth/IsLogin";
 
 function TabelPesanan() {
   const qs = require("qs");
@@ -73,8 +74,8 @@ function TabelPesanan() {
               value: "belum_dibayar",
             },
             {
-              text: "Menunggu Dibayar",
-              value: "menunggu_dibayar",
+              text: "Menunggu Diverifikasi",
+              value: "menunggu_diverifikasi",
             },
             {
               text: "Sudah Dibayar",
@@ -272,7 +273,7 @@ function TabelPesanan() {
     setEditKuponPelanggan(
       dataState[result].id_kupon_pelanggan +
         ", " +
-        dataState[result].status_kupon
+        statusKupon(dataState[result].status_kupon)
     );
     setEditPaketKupon(
       dataState[result].id_paket_kupon +
@@ -395,6 +396,7 @@ function TabelPesanan() {
   // ! waktu pemesanan, nama penerima, no HP WA, alamat, catatan makanan, catatan pengantaran, status pemesanan
   return (
     <div>
+      <IsLogin />
       <DrawerComponents title="Tabel Pesanan" content={content} />
 
       {/* edit modal */}

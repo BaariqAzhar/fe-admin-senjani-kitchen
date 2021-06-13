@@ -12,6 +12,7 @@ import UrlApi from "../UrlApi";
 import jenisNasi from "../Function/jenisNasi";
 import jenisPaketKupon from "../Function/jenisPaketKupon";
 import laukTambahan from "../Function/laukTambahan";
+import IsLogin from "../Auth/IsLogin";
 
 function TabelPaketKupon() {
   const qs = require("qs");
@@ -211,6 +212,7 @@ function TabelPaketKupon() {
 
   return (
     <div>
+      <IsLogin />
       <DrawerComponents title="Tabel Paket Kupon" content={content} />
       <Modal
         title="Edit Menu"

@@ -22,6 +22,12 @@ function DrawerComponents(props) {
   const onOpenChange = () => {
     setOpen(!open);
   };
+
+  const onClickKeluar = () => {
+    localStorage.clear();
+    history.push("/Login");
+  };
+
   const Sidebar = (
     <List>
       <List.Item
@@ -79,6 +85,21 @@ function DrawerComponents(props) {
         }}
       >
         Tabel Kupon Pelanggan
+      </List.Item>
+      <List.Item
+        arrow="horizontal"
+        onClick={() => {
+          history.push("/Pengaturan");
+        }}
+      >
+        Pengaturan
+      </List.Item>
+      <List.Item
+        onClick={() => {
+          onClickKeluar();
+        }}
+      >
+        Keluar
       </List.Item>
     </List>
   );

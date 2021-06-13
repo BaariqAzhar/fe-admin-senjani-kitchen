@@ -16,6 +16,16 @@ import caraPembayaran from "../Function/caraPembayaran";
 
 function BuktiPembayaran() {
   const qs = require("qs");
+  let history = useHistory();
+
+  useEffect(() => {
+    return history.listen(() => {
+      // listen
+      if (history.action === "POP") {
+        history.replace("/BuktiPembayaran");
+      }
+    });
+  }, [history]);
 
   const [dataState, setDataState] = useState([]);
   const processApiBuktiPembayaran = () => {
@@ -196,9 +206,13 @@ function BuktiPembayaran() {
       );
       console.log(res);
       if (res.data.status === "success") {
-        alert("Verifikasi Bukti Pembayaran Berhasil");
+        if (statusKupon === "sudah_dibayar") {
+          alert("Proses Berhasil, Bukti Pembayaran Valid/ Asli / Cocok");
+        } else if (statusKupon === "gagal_dibayar") {
+          alert("Proses Berhasil, Bukti Pembayaran Tidak Valid/ Beda");
+        }
       } else {
-        alert("Verifikasi Bukti Pembayaran Tidak Berhasil");
+        alert("Proses Verifikasi Gagal");
       }
       setConfirmLoadingEdit(false);
       setIsEditModalVisible(false);
