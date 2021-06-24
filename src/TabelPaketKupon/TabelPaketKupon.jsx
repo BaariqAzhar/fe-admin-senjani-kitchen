@@ -116,6 +116,7 @@ function TabelPaketKupon() {
       dataIndex: "id_paket_kupon",
       render: (idPaketKupon) => (
         <Button
+          type="primary"
           onClick={() => {
             showEditModal(idPaketKupon);
           }}

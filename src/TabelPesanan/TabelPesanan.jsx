@@ -233,6 +233,7 @@ function TabelPesanan() {
       dataIndex: "id_pesanan",
       render: (idPesanan) => (
         <Button
+          type="primary"
           onClick={() => {
             showEditModal(idPesanan);
           }}
@@ -401,7 +402,7 @@ function TabelPesanan() {
 
       {/* edit modal */}
       <Modal
-        title="Edit Kupon Pelanggan"
+        title="Edit Pesanan"
         visible={isEditModalVisible}
         onOk={handleOkEdit}
         onCancel={handleCancelEdit}

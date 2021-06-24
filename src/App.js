@@ -13,10 +13,15 @@ import TabelPesanan from "./TabelPesanan/TabelPesanan";
 import BuktiPembayaran from "./BuktiPembayaran/BuktiPembayaran";
 import Pengaturan from "./Pengaturan/Pengaturan";
 
+import Coba from "./Coba";
+
 function App() {
   return (
     <Router>
       <Switch>
+        <Route path="/Coba">
+          <Coba />
+        </Route>
         <Route path="/Login">
           <Login />
         </Route>

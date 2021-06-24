@@ -62,6 +62,7 @@ function TabelPelanggan() {
       dataIndex: "id_pelanggan",
       render: (idPelanggan) => (
         <Button
+          type="primary"
           onClick={() => {
             showEditModal(idPelanggan);
           }}
@@ -168,7 +169,7 @@ function TabelPelanggan() {
       <IsLogin />
       <DrawerComponents title="Tabel Pelanggan" content={content} />
       <Modal
-        title="Edit Menu"
+        title="Edit Pelanggan"
         visible={isEditModalVisible}
         onOk={handleOkEdit}
         onCancel={handleCancelEdit}

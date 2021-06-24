@@ -116,7 +116,7 @@ function Login() {
           <Button type="primary" onClick={loginProcess}>
             Masuk
           </Button>
-          <br /> <button onClick={clearLocalStorage}>clear localStorage</button>
+          {/* <br /> <button onClick={clearLocalStorage}>clear localStorage</button> */}
         </WingBlank>
       </div>
     </div>
