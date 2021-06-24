@@ -198,6 +198,7 @@ function TabelKuponPelanggan() {
       dataIndex: "id_kupon_pelanggan",
       render: (idKuponPelanggan) => (
         <Button
+          type="primary"
           onClick={() => {
             showEditModal(idKuponPelanggan);
           }}

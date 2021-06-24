@@ -78,6 +78,7 @@ function TabelJadwalMenu() {
       dataIndex: "foto_menu",
       render: (fotoMenu) => (
         <Button
+          type="ghost"
           onClick={() => {
             showModal(fotoMenu);
           }}
@@ -91,6 +92,7 @@ function TabelJadwalMenu() {
       dataIndex: "id_menu",
       render: (idMenu) => (
         <Button
+          type="primary"
           onClick={() => {
             showEditModal(idMenu);
           }}

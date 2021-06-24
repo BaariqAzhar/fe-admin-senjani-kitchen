@@ -107,7 +107,7 @@ function DrawerComponents(props) {
   return (
     <div>
       <NavBar
-        mode="light"
+        mode="dark"
         icon={<Icon type="ellipsis" />}
         onLeftClick={onOpenChange}
       >
