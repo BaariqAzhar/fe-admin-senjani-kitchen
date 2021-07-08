@@ -1,15 +1,15 @@
 // *'belum_dibayar','menunggu_dibayar','sudah_dibayar','gagal_dibayar'
-const statusKupon = (status_pesanan) => {
+const statusKuponColor = (status_pesanan) => {
   if (status_pesanan === "belum_dibayar") {
-    return "Belum dibayar";
+    return "#A20B0B";
   } else if (status_pesanan === "menunggu_diverifikasi") {
-    return "Menunggu diverifikasi";
+    return "#195BDB";
   } else if (status_pesanan === "sudah_dibayar") {
-    return "Sudah dibayar";
+    return "#1FAE98";
   } else if (status_pesanan === "gagal_dibayar") {
-    return "Gagal dibayar";
+    return "#810101";
   } else {
     return "";
   }
 };
-export default statusKupon;
+export default statusKuponColor;

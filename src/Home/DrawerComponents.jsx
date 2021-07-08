@@ -104,6 +104,10 @@ function DrawerComponents(props) {
     </List>
   );
 
+  const heightDevice = document.documentElement.clientHeight - 60;
+  console.log("clientHeight", document.documentElement.clientHeight);
+  console.log("heightDevice", heightDevice);
+
   return (
     <div>
       <NavBar
@@ -115,7 +119,8 @@ function DrawerComponents(props) {
       </NavBar>
       <Drawer
         className="my-drawer"
-        style={{ minHeight: document.documentElement.clientHeight }}
+        // style={{ minHeight: document.documentElement.clientHeight }}
+        style={{ minHeight: heightDevice }}
         enableDragHandle
         contentStyle={{ color: "#A6A6A6", textAlign: "center" }}
         sidebar={Sidebar}

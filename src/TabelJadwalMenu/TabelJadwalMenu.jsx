@@ -1,16 +1,31 @@
-import { Button, WhiteSpace, Card } from "antd-mobile";
+import { WhiteSpace, Card } from "antd-mobile";
 import "antd-mobile/dist/antd-mobile.css";
 import axios from "axios";
 import { useState, useEffect, useDebugValue } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Table, Modal, DatePicker, Radio, Input } from "antd";
+import {
+  Table,
+  Modal,
+  DatePicker,
+  Radio,
+  Input,
+  Space,
+  Tag,
+  Button,
+} from "antd";
 import "antd/dist/antd.css";
 import moment from "moment";
+import Highlighter from "react-highlight-words";
+import { SearchOutlined } from "@ant-design/icons";
 
 import DrawerComponents from "../Home/DrawerComponents";
 import UrlApi from "../UrlApi";
 import waktuMenu from "../Function/waktuMenu";
+import waktuMenuColor from "../Function/waktuMenuColor";
 import IsLogin from "../Auth/IsLogin";
+import imgImg from "./img.svg";
+import editImg from "./edit.svg";
+import addImg from "./add.svg";
 
 function TabelJadwalMenu() {
   const [dataState, setDataState] = useState([]);
@@ -28,19 +43,19 @@ function TabelJadwalMenu() {
 
   const columns = [
     {
-      title: "ID Menu",
-      dataIndex: "id_menu",
-      sorter: (a, b) => a.id_menu - b.id_menu,
-    },
-    {
-      title: "Tanggal Menu",
+      title: "Tanggal",
       dataIndex: "tanggal_menu",
+      width: 20,
+      ...getColumnSearchProps("tanggal_menu"),
       sorter: (a, b) => new Date(a.tanggal_menu) - new Date(b.tanggal_menu),
     },
     {
-      title: "Waktu Menu",
+      title: "Waktu",
       dataIndex: "waktu_menu",
-      render: (text) => <p>{waktuMenu(text)}</p>,
+      width: 20,
+      render: (text) => (
+        <Tag color={waktuMenuColor(text)}>{waktuMenu(text)}</Tag>
+      ),
       filters: [
         {
           text: "Pagi",
@@ -58,38 +73,43 @@ function TabelJadwalMenu() {
       onFilter: (value, record) => record.waktu_menu.indexOf(value) === 0,
     },
     {
-      title: "Nama Menu",
+      title: "Nama",
       dataIndex: "nama_menu",
+      ...getColumnSearchProps("nama_menu"),
       sorter: (a, b) => a.nama_menu.localeCompare(b.nama_menu),
     },
     {
       title: "Keterangan Menu",
       dataIndex: "keterangan_menu",
+      ...getColumnSearchProps("keterangan_menu"),
       sorter: (a, b) => a.keterangan_menu.localeCompare(b.keterangan_menu),
     },
     {
       title: "Lauk Tambahan",
       dataIndex: "lauk_tambahan_menu",
+      ...getColumnSearchProps("lauk_tambahan_menu"),
       sorter: (a, b) =>
         a.lauk_tambahan_menu.localeCompare(b.lauk_tambahan_menu),
     },
     {
       title: "Foto Menu",
       dataIndex: "foto_menu",
+      width: "50px",
       render: (fotoMenu) => (
         <Button
-          type="ghost"
+          type="primary"
           onClick={() => {
             showModal(fotoMenu);
           }}
         >
-          Lihat Foto
+          <img src={imgImg} alt="" />
         </Button>
       ),
     },
     {
       title: "Edit",
       dataIndex: "id_menu",
+      width: "100px",
       render: (idMenu) => (
         <Button
           type="primary"
@@ -97,6 +117,7 @@ function TabelJadwalMenu() {
             showEditModal(idMenu);
           }}
         >
+          <img src={editImg} alt="" />
           Edit
         </Button>
       ),
@@ -310,17 +331,108 @@ function TabelJadwalMenu() {
     }
   };
 
+  // ! search components
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+
+  function getColumnSearchProps(dataIndex) {
+    return {
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            // ref={node => {
+            //   this.searchInput = node;
+            // }}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => handleReset(clearFilters)}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record[dataIndex]
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase()),
+      onFilterDropdownVisibleChange: (visible) => {
+        if (visible) {
+          // setTimeout(() => this.searchInput.select());
+        }
+      },
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text.toString()}
+          />
+        ) : (
+          text
+        ),
+    };
+  }
+
+  function handleSearch(selectedKeys, confirm, dataIndex) {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  }
+
+  function handleReset(clearFilters) {
+    clearFilters();
+    setSearchText("");
+  }
+
   const content = (
     <div>
       <Card>
         <Card.Body>
-          <Button
-            onClick={() => showCreateModal()}
-            type="primary"
-            style={{ width: "150px" }}
-          >
-            Tambah Menu
-          </Button>
+          <div style={{ display: "grid", placeItems: "start" }}>
+            <Button
+              onClick={() => showCreateModal()}
+              type="primary"
+              style={{ width: "150px" }}
+            >
+              <img
+                src={addImg}
+                style={{ width: "1.5em", marginRight: "1em" }}
+                alt=""
+              />
+              Tambah Menu
+            </Button>
+          </div>
+          <br />
           <Table columns={columns} dataSource={dataState} />
         </Card.Body>
       </Card>
@@ -399,9 +511,6 @@ function TabelJadwalMenu() {
       >
         {selectedKey >= 0 && dataState ? (
           <div>
-            <h4>ID Menu</h4>
-            <p>{editIdMenu}</p>
-            <WhiteSpace />
             <h4>Tanggal Menu</h4>
             <DatePicker
               defaultValue={moment(editTanggal, "YYYY-MM-DD")}

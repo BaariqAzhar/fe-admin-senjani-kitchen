@@ -1,16 +1,19 @@
-import { Button, WhiteSpace, Card, InputItem } from "antd-mobile";
+import { WhiteSpace, Card, InputItem } from "antd-mobile";
 import "antd-mobile/dist/antd-mobile.css";
 import axios from "axios";
 import { useState, useEffect, useDebugValue } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Table, Modal, DatePicker, Radio, Input, Space } from "antd";
+import { Table, Modal, DatePicker, Radio, Input, Space, Button } from "antd";
 import "antd/dist/antd.css";
 import moment from "moment";
+import Highlighter from "react-highlight-words";
+import { SearchOutlined } from "@ant-design/icons";
 
 import DrawerComponents from "../Home/DrawerComponents";
 import UrlApi from "../UrlApi";
 import waktuMenu from "../Function/waktuMenu";
 import IsLogin from "../Auth/IsLogin";
+import editImg from "./edit.svg";
 
 function TabelPelanggan() {
   const [dataState, setDataState] = useState([]);
@@ -28,38 +31,39 @@ function TabelPelanggan() {
 
   const columns = [
     {
-      title: "ID Pelanggan",
-      dataIndex: "id_pelanggan",
-      sorter: (a, b) => a.id_pelanggan - b.id_pelanggan,
+      title: "Nama",
+      dataIndex: "nama_lengkap",
+      ...getColumnSearchProps("nama_lengkap"),
+      sorter: (a, b) => a.nama_lengkap.localeCompare(b.nama_lengkap),
     },
     {
       title: "Email",
       dataIndex: "email",
+      ...getColumnSearchProps("email"),
       sorter: (a, b) => a.email.localeCompare(b.email),
-    },
-    {
-      title: "Nama Lengkap",
-      dataIndex: "nama_lengkap",
-      sorter: (a, b) => a.nama_lengkap.localeCompare(b.nama_lengkap),
-    },
-    {
-      title: "Alamat",
-      dataIndex: "alamat",
-      sorter: (a, b) => a.alamat.localeCompare(b.alamat),
     },
     {
       title: "No HP (Whatsapp)",
       dataIndex: "no_hp_wa",
+      ...getColumnSearchProps("no_hp_wa"),
       sorter: (a, b) => a.no_hp_wa.localeCompare(b.no_hp_wa),
+    },
+    {
+      title: "Alamat",
+      dataIndex: "alamat",
+      ...getColumnSearchProps("alamat"),
+      sorter: (a, b) => a.alamat.localeCompare(b.alamat),
     },
     {
       title: "Catatan Makanan",
       dataIndex: "alergi_makanan",
+      ...getColumnSearchProps("alergi_makanan"),
       sorter: (a, b) => a.alergi_makanan.localeCompare(b.alergi_makanan),
     },
     {
       title: "Edit",
       dataIndex: "id_pelanggan",
+      width: "100px",
       render: (idPelanggan) => (
         <Button
           type="primary"
@@ -67,7 +71,7 @@ function TabelPelanggan() {
             showEditModal(idPelanggan);
           }}
         >
-          Edit
+          <img src={editImg} alt="" /> Edit
         </Button>
       ),
     },
@@ -154,6 +158,90 @@ function TabelPelanggan() {
     }
   };
 
+  // ! search components
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+
+  function getColumnSearchProps(dataIndex) {
+    return {
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            // ref={node => {
+            //   this.searchInput = node;
+            // }}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => handleReset(clearFilters)}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record[dataIndex]
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase()),
+      onFilterDropdownVisibleChange: (visible) => {
+        if (visible) {
+          // setTimeout(() => this.searchInput.select());
+        }
+      },
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text.toString()}
+          />
+        ) : (
+          text
+        ),
+    };
+  }
+
+  function handleSearch(selectedKeys, confirm, dataIndex) {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  }
+
+  function handleReset(clearFilters) {
+    clearFilters();
+    setSearchText("");
+  }
+  // ! search end
+
   const content = (
     <div>
       <Card>
@@ -176,18 +264,7 @@ function TabelPelanggan() {
       >
         {dataState ? (
           <div>
-            <h4>ID Pelanggan</h4>
-            <h4>{editIdPelanggan}</h4>
-            <WhiteSpace />
-            <h4>Email</h4>
-            <Input.TextArea
-              value={editEmail}
-              onChange={onChangeEditEmail}
-              placeholder="e.g: baariqazhar@gmail.com"
-              autoSize
-            />
-            <WhiteSpace />
-            <h4>Nama Lengkap</h4>
+            <h4>Nama</h4>
             <Input.TextArea
               value={editNamaLengkap}
               onChange={onChangeEditNamaLengkap}
@@ -195,12 +272,11 @@ function TabelPelanggan() {
               autoSize
             />
             <WhiteSpace />
-            <h4>Alamat</h4>
+            <h4>Email</h4>
             <Input.TextArea
-              value={editAlamat}
-              onChange={onChangeEditAlamat}
-              placeholder="e.g: Jl. Candi 2C No.557 (Kos Rahman 99), 
-              Karangbesuki, Kec. Sukun, Kota Malang"
+              value={editEmail}
+              onChange={onChangeEditEmail}
+              placeholder="e.g: baariqazhar@gmail.com"
               autoSize
             />
             <WhiteSpace />
@@ -211,6 +287,16 @@ function TabelPelanggan() {
               type="number"
               placeholder="087738210702"
             ></InputItem>
+            <WhiteSpace />
+
+            <h4>Alamat</h4>
+            <Input.TextArea
+              value={editAlamat}
+              onChange={onChangeEditAlamat}
+              placeholder="e.g: Jl. Candi 2C No.557 (Kos Rahman 99), 
+              Karangbesuki, Kec. Sukun, Kota Malang"
+              autoSize
+            />
             <WhiteSpace />
             <h4>Catatan Makanan</h4>
             <Input.TextArea

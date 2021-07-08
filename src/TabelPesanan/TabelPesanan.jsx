@@ -1,20 +1,39 @@
-import { Button, WhiteSpace, Card, InputItem } from "antd-mobile";
+import { WhiteSpace, Card, InputItem } from "antd-mobile";
 import "antd-mobile/dist/antd-mobile.css";
 import axios from "axios";
 import { useState, useEffect, useDebugValue } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Table, Modal, DatePicker, Radio, Input, Form } from "antd";
+import {
+  Table,
+  Modal,
+  DatePicker,
+  Radio,
+  Input,
+  Form,
+  Space,
+  Tag,
+  Button,
+} from "antd";
 import "antd/dist/antd.css";
 import moment from "moment";
+import Highlighter from "react-highlight-words";
+import { SearchOutlined } from "@ant-design/icons";
 
 import DrawerComponents from "../Home/DrawerComponents";
 import UrlApi from "../UrlApi";
 import waktuMenu from "../Function/waktuMenu";
+import waktuMenuColor from "../Function/waktuMenuColor";
 import jenisPaketKupon from "../Function/jenisPaketKupon";
+import jenisPaketKuponColor from "../Function/jenisPaketKuponColor";
 import statusKupon from "../Function/statusKupon";
 import statusPesanan from "../Function/statusPesanan";
+import statusPesananColor from "../Function/statusPesananColor";
 import caraPembayaran from "../Function/caraPembayaran";
 import IsLogin from "../Auth/IsLogin";
+import editImg from "./edit.svg";
+import editBlueImg from "./editBlue.svg";
+import jenisNasi from "../Function/jenisNasi";
+import jenisNasiColor from "../Function/jenisNasiColor";
 
 function TabelPesanan() {
   const qs = require("qs");
@@ -34,180 +53,43 @@ function TabelPesanan() {
 
   const columns = [
     {
-      title: "ID Pesanan",
-      dataIndex: "id_pesanan",
-      width: 50,
-      sorter: (a, b) => a.id_pesanan - b.id_pesanan,
+      title: "Tanggal",
+      dataIndex: "tanggal_menu",
+      width: 20,
+      ...getColumnSearchProps("tanggal_menu"),
+      sorter: (a, b) => new Date(a.tanggal_menu) - new Date(b.tanggal_menu),
     },
     {
-      title: "Pelanggan",
-      children: [
+      title: "Waktu",
+      dataIndex: "waktu_menu",
+      width: 20,
+      render: (text) => (
+        <Tag color={waktuMenuColor(text)}>{waktuMenu(text)}</Tag>
+      ),
+      filters: [
         {
-          title: "ID",
-          dataIndex: "id_pelanggan",
-          width: 50,
-          sorter: (a, b) => a.id_pelanggan - b.id_pelanggan,
+          text: "Pagi",
+          value: "pagi",
         },
         {
-          title: "Nama",
-          dataIndex: "nama_lengkap",
-          sorter: (a, b) => a.nama_lengkap.localeCompare(b.nama_lengkap),
-        },
-      ],
-    },
-    {
-      title: "Kupon Pelanggan",
-      children: [
-        {
-          title: "ID",
-          dataIndex: "id_kupon_pelanggan",
-          width: 50,
-          sorter: (a, b) => a.id_kupon_pelanggan - b.id_kupon_pelanggan,
+          text: "Siang",
+          value: "siang",
         },
         {
-          title: "Status Kupon",
-          dataIndex: "status_kupon",
-          render: (text) => <p>{statusKupon(text)}</p>,
-          filters: [
-            {
-              text: "Belum Dibayar",
-              value: "belum_dibayar",
-            },
-            {
-              text: "Menunggu Diverifikasi",
-              value: "menunggu_diverifikasi",
-            },
-            {
-              text: "Sudah Dibayar",
-              value: "sudah_dibayar",
-            },
-            {
-              text: "Gagal Dibayar",
-              value: "gagal_dibayar",
-            },
-          ],
-          onFilter: (value, record) => record.status_kupon.indexOf(value) === 0,
+          text: "Sore",
+          value: "sore",
         },
       ],
-    },
-    {
-      title: "Paket Kupon",
-      children: [
-        {
-          title: "ID",
-          dataIndex: "id_paket_kupon",
-          width: 50,
-          sorter: (a, b) => a.id_kupon_pelanggan - b.id_kupon_pelanggan,
-        },
-        {
-          title: "Kode",
-          dataIndex: "kode_paket_kupon",
-          sorter: (a, b) =>
-            a.kode_paket_kupon.localeCompare(b.kode_paket_kupon),
-        },
-        {
-          title: "Jenis Paket Kupon",
-          dataIndex: "jenis_paket_kupon",
-          render: (text) => <p>{jenisPaketKupon(text)}</p>,
-          filters: [
-            {
-              text: "Basic Meal Box",
-              value: "basic_meal_box",
-            },
-            {
-              text: "Reusable Meal Box",
-              value: "reusable_meal_box",
-            },
-            {
-              text: "Deluxe Meal Box",
-              value: "deluxe_meal_box",
-            },
-            {
-              text: "Couple Pack",
-              value: "couple_pack",
-            },
-            {
-              text: "Family Pack",
-              value: "family_pack",
-            },
-          ],
-          onFilter: (value, record) =>
-            record.jenis_paket_kupon.indexOf(value) === 0,
-        },
-      ],
-    },
-    {
-      title: "Menu",
-      children: [
-        {
-          title: "ID",
-          dataIndex: "id_menu",
-          width: 50,
-          sorter: (a, b) => a.id_menu - b.id_menu,
-        },
-        {
-          title: "Tanggal",
-          dataIndex: "tanggal_menu",
-          sorter: (a, b) => new Date(a.tanggal_menu) - new Date(b.tanggal_menu),
-        },
-        {
-          title: "Waktu",
-          dataIndex: "waktu_menu",
-          render: (text) => <p>{waktuMenu(text)}</p>,
-          filters: [
-            {
-              text: "Pagi",
-              value: "pagi",
-            },
-            {
-              text: "Siang",
-              value: "siang",
-            },
-            {
-              text: "Sore",
-              value: "sore",
-            },
-          ],
-          onFilter: (value, record) => record.waktu_menu.indexOf(value) === 0,
-        },
-      ],
-    },
-    {
-      title: "Waktu Pemesanan",
-      dataIndex: "waktu_pemesanan",
-      sorter: (a, b) =>
-        new Date(a.waktu_pemesanan) - new Date(b.waktu_pemesanan),
-    },
-    {
-      title: "Nama Penerima",
-      dataIndex: "nama_penerima",
-      sorter: (a, b) => a.nama_penerima.localeCompare(b.nama_penerima),
-    },
-    {
-      title: "No HP (Whatsapp)",
-      dataIndex: "no_hp_wa_penerima",
-      sorter: (a, b) => a.no_hp_wa_penerima.localeCompare(b.no_hp_wa_penerima),
-    },
-    {
-      title: "Alamat Penerima",
-      dataIndex: "alamat_penerima",
-      sorter: (a, b) => a.alamat_penerima.localeCompare(b.alamat_penerima),
-    },
-    {
-      title: "Catatan Makanan Penerima",
-      dataIndex: "alergi_makanan_penerima",
-      sorter: (a, b) =>
-        a.alergi_makanan_penerima.localeCompare(b.alergi_makanan_penerima),
-    },
-    {
-      title: "Catatan Pengantaran",
-      dataIndex: "catatan_pesanan",
-      sorter: (a, b) => a.catatan_pesanan.localeCompare(b.catatan_pesanan),
+      onFilter: (value, record) => record.waktu_menu.indexOf(value) === 0,
     },
     {
       title: "Status Pesanan",
-      dataIndex: "status_pesanan",
-      render: (text) => <p>{statusPesanan(text)}</p>,
+      dataIndex: ["status_pesanan", "id_pesanan"],
+      render: (text, row) => (
+        <Tag color={statusPesananColor(row["status_pesanan"])}>
+          {statusPesanan(row["status_pesanan"])}
+        </Tag>
+      ),
       filters: [
         {
           text: "Belum Dikirim",
@@ -229,8 +111,91 @@ function TabelPesanan() {
       onFilter: (value, record) => record.status_pesanan.indexOf(value) === 0,
     },
     {
+      title: "Jenis Paket Kupon",
+      dataIndex: "jenis_paket_kupon",
+      width: 20,
+      render: (text) => (
+        <Tag color={jenisPaketKuponColor(text)}>{jenisPaketKupon(text)}</Tag>
+      ),
+      filters: [
+        {
+          text: "Basic Meal Box",
+          value: "basic_meal_box",
+        },
+        {
+          text: "Reusable Meal Box",
+          value: "reusable_meal_box",
+        },
+        {
+          text: "Deluxe Meal Box",
+          value: "deluxe_meal_box",
+        },
+        {
+          text: "Couple Pack",
+          value: "couple_pack",
+        },
+        {
+          text: "Family Pack",
+          value: "family_pack",
+        },
+      ],
+      onFilter: (value, record) =>
+        record.jenis_paket_kupon.indexOf(value) === 0,
+    },
+    {
+      title: "Jenis Nasi",
+      dataIndex: "jenis_nasi",
+      // render: (text) => <p>{jenisNasi(text)}</p>,
+      render: (text) => (
+        <Tag color={jenisNasiColor(text)}>{jenisNasi(text)}</Tag>
+      ),
+      filters: [
+        {
+          text: "Nasi Merah",
+          value: "nasi_merah",
+        },
+        {
+          text: "Nasi Putih",
+          value: "nasi_putih",
+        },
+      ],
+      onFilter: (value, record) => record.jenis_nasi.indexOf(value) === 0,
+    },
+    {
+      title: "Nama Penerima",
+      dataIndex: "nama_penerima",
+      ...getColumnSearchProps("nama_penerima"),
+      sorter: (a, b) => a.nama_penerima.localeCompare(b.nama_penerima),
+    },
+    {
+      title: "No HP (Whatsapp)",
+      dataIndex: "no_hp_wa_penerima",
+      ...getColumnSearchProps("no_hp_wa_penerima"),
+      sorter: (a, b) => a.no_hp_wa_penerima.localeCompare(b.no_hp_wa_penerima),
+    },
+    {
+      title: "Alamat Penerima",
+      dataIndex: "alamat_penerima",
+      ...getColumnSearchProps("alamat_penerima"),
+      sorter: (a, b) => a.alamat_penerima.localeCompare(b.alamat_penerima),
+    },
+    {
+      title: "Catatan Makanan Penerima",
+      dataIndex: "alergi_makanan_penerima",
+      ...getColumnSearchProps("alergi_makanan_penerima"),
+      sorter: (a, b) =>
+        a.alergi_makanan_penerima.localeCompare(b.alergi_makanan_penerima),
+    },
+    {
+      title: "Catatan Pengantaran",
+      dataIndex: "catatan_pesanan",
+      ...getColumnSearchProps("alergi_makanan_penerima"),
+      sorter: (a, b) => a.catatan_pesanan.localeCompare(b.catatan_pesanan),
+    },
+    {
       title: "Edit",
       dataIndex: "id_pesanan",
+      width: "100px",
       render: (idPesanan) => (
         <Button
           type="primary"
@@ -238,6 +203,7 @@ function TabelPesanan() {
             showEditModal(idPesanan);
           }}
         >
+          <img src={editImg} alt="" />
           Edit
         </Button>
       ),
@@ -263,6 +229,11 @@ function TabelPesanan() {
   const [selectedKey, setSelectedKey] = useState();
   const [confirmLoadingEdit, setConfirmLoadingEdit] = useState(false);
   const showEditModal = (idPesanan) => {
+    processEditState(idPesanan);
+    setIsEditModalVisible(true);
+  };
+  // * digunakan di showEditModal & showEditStatusModal
+  const processEditState = (idPesanan) => {
     var result = dataState.findIndex((entry) => entry.id_pesanan === idPesanan);
     setSelectedKey(result);
     console.log(dataState[result]);
@@ -297,8 +268,6 @@ function TabelPesanan() {
     setEditCatatanMakanan(dataState[result].alergi_makanan_penerima);
     setEditCatatanPengantaran(dataState[result].catatan_pesanan);
     setEditStatusPemesanan(dataState[result].status_pesanan);
-
-    setIsEditModalVisible(true);
   };
   const handleCancelEdit = () => {
     setIsEditModalVisible(false);
@@ -383,6 +352,90 @@ function TabelPesanan() {
     }
   };
 
+  // ! search components
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+
+  function getColumnSearchProps(dataIndex) {
+    return {
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            // ref={node => {
+            //   this.searchInput = node;
+            // }}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => handleReset(clearFilters)}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record[dataIndex]
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase()),
+      onFilterDropdownVisibleChange: (visible) => {
+        if (visible) {
+          // setTimeout(() => this.searchInput.select());
+        }
+      },
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text.toString()}
+          />
+        ) : (
+          text
+        ),
+    };
+  }
+
+  function handleSearch(selectedKeys, confirm, dataIndex) {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  }
+
+  function handleReset(clearFilters) {
+    clearFilters();
+    setSearchText("");
+  }
+  // ! search end
+
   const content = (
     <div>
       <Card>
@@ -393,8 +446,6 @@ function TabelPesanan() {
     </div>
   );
 
-  // ! pelanggan, kupon pelang, paket kupon, menu
-  // ! waktu pemesanan, nama penerima, no HP WA, alamat, catatan makanan, catatan pengantaran, status pemesanan
   return (
     <div>
       <IsLogin />
@@ -409,7 +460,7 @@ function TabelPesanan() {
       >
         {selectedKey >= 0 && dataState ? (
           <div>
-            <h4>ID Pesanan</h4>
+            {/* <h4>ID Pesanan</h4>
             <p>{editIdPesanan}</p>
             <WhiteSpace />
             <h4>Pelanggan</h4>
@@ -430,7 +481,7 @@ function TabelPesanan() {
               showTime
               onChange={onChangeEditWaktuPemesanan}
             />
-            <WhiteSpace />
+            <WhiteSpace /> */}
             <h4>Nama Penerima</h4>
             <Input.TextArea
               value={editNama}
