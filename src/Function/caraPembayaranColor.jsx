@@ -1,19 +1,19 @@
-const caraPembayaran = (cara_pembayaran) => {
+const caraPembayaranColor = (cara_pembayaran) => {
   // * 'ovo','gopay','dana','link_aja','bni','jenius'
   if (cara_pembayaran === "ovo") {
-    return "Ovo";
+    return "#39286F";
   } else if (cara_pembayaran === "gopay") {
-    return "Gopay";
+    return "#00A512";
   } else if (cara_pembayaran === "dana") {
-    return "Dana";
+    return "#1967C4";
   } else if (cara_pembayaran === "link_aja") {
-    return "LinkAja";
+    return "#E12428";
   } else if (cara_pembayaran === "bni") {
-    return "Bank BNI";
+    return "#F74501";
   } else if (cara_pembayaran === "jenius") {
-    return "Jenius";
+    return "#01A6E2";
   } else {
     return "";
   }
 };
-export default caraPembayaran;
+export default caraPembayaranColor;

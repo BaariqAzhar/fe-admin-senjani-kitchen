@@ -1,18 +1,33 @@
-import { Button, WhiteSpace, Card, InputItem } from "antd-mobile";
+import { WhiteSpace, Card, InputItem } from "antd-mobile";
 import "antd-mobile/dist/antd-mobile.css";
 import axios from "axios";
 import { useState, useEffect, useDebugValue } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Table, Modal, DatePicker, Radio, Input, Space } from "antd";
+import {
+  Table,
+  Modal,
+  DatePicker,
+  Radio,
+  Input,
+  Space,
+  Tag,
+  Button,
+} from "antd";
 import "antd/dist/antd.css";
 import moment from "moment";
+import NumberFormat from "react-number-format";
+import Highlighter from "react-highlight-words";
+import { SearchOutlined } from "@ant-design/icons";
 
 import DrawerComponents from "../Home/DrawerComponents";
 import UrlApi from "../UrlApi";
 import jenisNasi from "../Function/jenisNasi";
+import jenisNasiColor from "../Function/jenisNasiColor";
 import jenisPaketKupon from "../Function/jenisPaketKupon";
+import jenisPaketKuponColor from "../Function/jenisPaketKuponColor";
 import laukTambahan from "../Function/laukTambahan";
 import IsLogin from "../Auth/IsLogin";
+import editImg from "./edit.svg";
 
 function TabelPaketKupon() {
   const qs = require("qs");
@@ -31,19 +46,12 @@ function TabelPaketKupon() {
 
   const columns = [
     {
-      title: "ID Paket Kupon",
-      dataIndex: "id_paket_kupon",
-      sorter: (a, b) => a.id_paket_kupon - b.id_paket_kupon,
-    },
-    {
-      title: "Kode Paket Kupon",
-      dataIndex: "kode_paket_kupon",
-      sorter: (a, b) => a.kode_paket_kupon.localeCompare(b.kode_paket_kupon),
-    },
-    {
       title: "Jenis Paket Kupon",
       dataIndex: "jenis_paket_kupon",
-      render: (text) => <p>{jenisPaketKupon(text)}</p>,
+      width: 20,
+      render: (text) => (
+        <Tag color={jenisPaketKuponColor(text)}>{jenisPaketKupon(text)}</Tag>
+      ),
       filters: [
         {
           text: "Basic Meal Box",
@@ -70,14 +78,38 @@ function TabelPaketKupon() {
         record.jenis_paket_kupon.indexOf(value) === 0,
     },
     {
+      title: "Kode Paket Kupon",
+      dataIndex: "kode_paket_kupon",
+      ...getColumnSearchProps("kode_paket_kupon"),
+      sorter: (a, b) => a.kode_paket_kupon.localeCompare(b.kode_paket_kupon),
+    },
+    {
       title: "Jumlah Kupon",
       dataIndex: "jumlah_kupon",
+      ...getColumnSearchProps("jumlah_kupon"),
       sorter: (a, b) => a.jumlah_kupon - b.jumlah_kupon,
+    },
+    {
+      title: "Harga",
+      dataIndex: "harga",
+      // render: (text) => <p>{text}</p>,
+      render: (text) => (
+        <NumberFormat
+          value={text}
+          displayType={"text"}
+          thousandSeparator={true}
+          prefix={"Rp"}
+        />
+      ),
+      sorter: (a, b) => a.harga - b.harga,
     },
     {
       title: "Jenis Nasi",
       dataIndex: "jenis_nasi",
-      render: (text) => <p>{jenisNasi(text)}</p>,
+      // render: (text) => <p>{jenisNasi(text)}</p>,
+      render: (text) => (
+        <Tag color={jenisNasiColor(text)}>{jenisNasi(text)}</Tag>
+      ),
       filters: [
         {
           text: "Nasi Merah",
@@ -90,30 +122,26 @@ function TabelPaketKupon() {
       ],
       onFilter: (value, record) => record.jenis_nasi.indexOf(value) === 0,
     },
-    {
-      title: "Lauk Tambahan",
-      dataIndex: "lauk_tambahan",
-      render: (text) => <p>{laukTambahan(text)}</p>,
-      filters: [
-        {
-          text: "Ada",
-          value: "ada",
-        },
-        {
-          text: "Tidak Ada",
-          value: "tidak_ada",
-        },
-      ],
-      onFilter: (value, record) => record.lauk_tambahan.indexOf(value) === 0,
-    },
-    {
-      title: "Harga",
-      dataIndex: "harga",
-      sorter: (a, b) => a.harga - b.harga,
-    },
+    // {
+    //   title: "Lauk Tambahan",
+    //   dataIndex: "lauk_tambahan",
+    //   render: (text) => <p>{laukTambahan(text)}</p>,
+    //   filters: [
+    //     {
+    //       text: "Ada",
+    //       value: "ada",
+    //     },
+    //     {
+    //       text: "Tidak Ada",
+    //       value: "tidak_ada",
+    //     },
+    //   ],
+    //   onFilter: (value, record) => record.lauk_tambahan.indexOf(value) === 0,
+    // },
     {
       title: "Edit",
       dataIndex: "id_paket_kupon",
+      width: "100px",
       render: (idPaketKupon) => (
         <Button
           type="primary"
@@ -121,7 +149,7 @@ function TabelPaketKupon() {
             showEditModal(idPaketKupon);
           }}
         >
-          Edit
+          <img src={editImg} alt="" /> Edit
         </Button>
       ),
     },
@@ -201,6 +229,90 @@ function TabelPaketKupon() {
     }
   };
 
+  // ! search components
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+
+  function getColumnSearchProps(dataIndex) {
+    return {
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            // ref={node => {
+            //   this.searchInput = node;
+            // }}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => handleReset(clearFilters)}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record[dataIndex]
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase()),
+      onFilterDropdownVisibleChange: (visible) => {
+        if (visible) {
+          // setTimeout(() => this.searchInput.select());
+        }
+      },
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text.toString()}
+          />
+        ) : (
+          text
+        ),
+    };
+  }
+
+  function handleSearch(selectedKeys, confirm, dataIndex) {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  }
+
+  function handleReset(clearFilters) {
+    clearFilters();
+    setSearchText("");
+  }
+  // ! search end
+
   const content = (
     <div>
       <Card>
@@ -223,9 +335,6 @@ function TabelPaketKupon() {
       >
         {dataState ? (
           <div>
-            <h4>ID Paket Kupon</h4>
-            <h4>{editIdPaketKupon}</h4>
-            <WhiteSpace />
             <h4>Kode</h4>
             <Input.TextArea
               value={editKode}
@@ -242,6 +351,14 @@ function TabelPaketKupon() {
               placeholder="12"
             ></InputItem>
             <WhiteSpace />
+            <h4>Harga (Rp)</h4>
+            <InputItem
+              value={editHarga}
+              onChange={onChangeEditHarga}
+              type="number"
+              placeholder="e.g: 48000"
+            ></InputItem>
+            <WhiteSpace />
             <h4>Jenis Nasi</h4>
             <Radio.Group
               buttonStyle="solid"
@@ -251,14 +368,6 @@ function TabelPaketKupon() {
               <Radio.Button value="nasi_merah">Nasi Merah</Radio.Button>
               <Radio.Button value="nasi_putih">Nasi Putih</Radio.Button>
             </Radio.Group>
-            <WhiteSpace />
-            <h4>Harga (Rp)</h4>
-            <InputItem
-              value={editHarga}
-              onChange={onChangeEditHarga}
-              type="number"
-              placeholder="e.g: 48000"
-            ></InputItem>
           </div>
         ) : (
           <></>

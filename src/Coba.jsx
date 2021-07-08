@@ -3,6 +3,9 @@ import { Table, Input, Button, Space } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 
+import MenuDrawer from "./Home/MenuDrawer";
+import { Menu } from "antd-mobile";
+
 function App() {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -136,7 +139,15 @@ function App() {
     },
   ];
 
-  return <Table columns={columns} dataSource={data} />;
+  const content = (
+    <Table columns={columns} dataSource={data} />
+  )
+
+  return (
+    <div>
+      <MenuDrawer content={content} title="Coba hahah" />
+    </div>
+  );
 }
 
 export default App;

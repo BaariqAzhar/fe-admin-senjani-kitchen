@@ -1,18 +1,34 @@
-import { Button, WhiteSpace, Card, InputItem } from "antd-mobile";
+import { WhiteSpace, Card, InputItem } from "antd-mobile";
 import "antd-mobile/dist/antd-mobile.css";
 import axios from "axios";
 import { useState, useEffect, useDebugValue } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Table, Modal, DatePicker, Radio, Input, Form } from "antd";
+import {
+  Table,
+  Modal,
+  DatePicker,
+  Radio,
+  Input,
+  Form,
+  Tag,
+  Button,
+  Space,
+} from "antd";
 import "antd/dist/antd.css";
 import moment from "moment";
+import NumberFormat from "react-number-format";
+import Highlighter from "react-highlight-words";
+import { SearchOutlined } from "@ant-design/icons";
 
 import DrawerComponents from "../Home/DrawerComponents";
+import MenuDrawer from "../Home/MenuDrawer";
 import UrlApi from "../UrlApi";
 import waktuMenu from "../Function/waktuMenu";
 import jenisPaketKupon from "../Function/jenisPaketKupon";
+import jenisPaketKuponColor from "../Function/jenisPaketKuponColor";
 import statusKupon from "../Function/statusKupon";
 import caraPembayaran from "../Function/caraPembayaran";
+import caraPembayaranColor from "../Function/caraPembayaranColor";
 
 function BuktiPembayaran() {
   const qs = require("qs");
@@ -44,14 +60,53 @@ function BuktiPembayaran() {
     {
       title: "Tanggal Pembelian",
       dataIndex: "tanggal_pembelian_kupon",
+      width: 20,
+      ...getColumnSearchProps("tanggal_pembelian_kupon"),
       sorter: (a, b) =>
         new Date(a.tanggal_pembelian_kupon) -
         new Date(b.tanggal_pembelian_kupon),
     },
     {
+      title: "Jenis Paket Kupon",
+      dataIndex: "jenis_paket_kupon",
+      // render: (text) => <p>{jenisPaketKupon(text)}</p>,
+      render: (text) => (
+        <Tag color={jenisPaketKuponColor(text)}>{jenisPaketKupon(text)}</Tag>
+      ),
+      width: 30,
+      filters: [
+        {
+          text: "Basic Meal Box",
+          value: "basic_meal_box",
+        },
+        {
+          text: "Reusable Meal Box",
+          value: "reusable_meal_box",
+        },
+        {
+          text: "Deluxe Meal Box",
+          value: "deluxe_meal_box",
+        },
+        {
+          text: "Couple Pack",
+          value: "couple_pack",
+        },
+        {
+          text: "Family Pack",
+          value: "family_pack",
+        },
+      ],
+      onFilter: (value, record) =>
+        record.jenis_paket_kupon.indexOf(value) === 0,
+    },
+    {
       title: "Cara Pembayaran",
       dataIndex: "cara_pembayaran",
-      render: (text) => <p>{caraPembayaran(text)}</p>,
+      // render: (text) => <p>{caraPembayaran(text)}</p>,
+      render: (text) => (
+        <Tag color={caraPembayaranColor(text)}>{caraPembayaran(text)}</Tag>
+      ),
+      width: 30,
       filters: [
         {
           text: "Ovo",
@@ -81,80 +136,44 @@ function BuktiPembayaran() {
       onFilter: (value, record) => record.cara_pembayaran.indexOf(value) === 0,
     },
     {
-      title: "Paket Kupon",
-      children: [
-        {
-          title: "ID",
-          dataIndex: "id_paket_kupon",
-          width: 50,
-          sorter: (a, b) => a.id_kupon_pelanggan - b.id_kupon_pelanggan,
-        },
-        {
-          title: "Jenis Paket Kupon",
-          dataIndex: "jenis_paket_kupon",
-          render: (text) => <p>{jenisPaketKupon(text)}</p>,
-          filters: [
-            {
-              text: "Basic Meal Box",
-              value: "basic_meal_box",
-            },
-            {
-              text: "Reusable Meal Box",
-              value: "reusable_meal_box",
-            },
-            {
-              text: "Deluxe Meal Box",
-              value: "deluxe_meal_box",
-            },
-            {
-              text: "Couple Pack",
-              value: "couple_pack",
-            },
-            {
-              text: "Family Pack",
-              value: "family_pack",
-            },
-          ],
-          onFilter: (value, record) =>
-            record.jenis_paket_kupon.indexOf(value) === 0,
-        },
-        {
-          title: "Harga",
-          dataIndex: "harga",
-          sorter: (a, b) => a.harga - b.harga,
-        },
-      ],
+      title: "Harga",
+      dataIndex: "harga",
+      width: 30,
+      // render: (text) => <p>{text}</p>,
+      render: (text) => (
+        <NumberFormat
+          value={text}
+          displayType={"text"}
+          thousandSeparator={true}
+          prefix={"Rp"}
+        />
+      ),
+      sorter: (a, b) => a.harga - b.harga,
     },
     {
-      title: "Pelanggan",
-      children: [
-        {
-          title: "ID",
-          dataIndex: "id_pelanggan",
-          width: 50,
-          sorter: (a, b) => a.id_pelanggan - b.id_pelanggan,
-        },
-        {
-          title: "Nama",
-          dataIndex: "nama_lengkap",
-          sorter: (a, b) => a.nama_lengkap.localeCompare(b.nama_lengkap),
-        },
-        {
-          title: "No HP (Whatsapp)",
-          dataIndex: "no_hp_wa",
-          sorter: (a, b) => a.no_hp_wa.localeCompare(b.no_hp_wa),
-        },
-      ],
+      title: "Nama",
+      dataIndex: "nama_lengkap",
+      ...getColumnSearchProps("nama_lengkap"),
+      sorter: (a, b) => a.nama_lengkap.localeCompare(b.nama_lengkap),
+    },
+    {
+      title: "No HP (Whatsapp)",
+      dataIndex: "no_hp_wa",
+      width: 30,
+      ...getColumnSearchProps("no_hp_wa"),
+      sorter: (a, b) => a.no_hp_wa.localeCompare(b.no_hp_wa),
     },
     {
       title: "Periksa",
       dataIndex: "id_kupon_pelanggan",
+      width: 100,
       render: (idKuponPelanggan) => (
         <Button
           type="primary"
           onClick={() => {
             showEditModal(idKuponPelanggan);
           }}
+          block
         >
           Periksa
         </Button>
@@ -220,6 +239,89 @@ function BuktiPembayaran() {
     }
   };
 
+  // ! search components
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+
+  function getColumnSearchProps(dataIndex) {
+    return {
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            // ref={node => {
+            //   this.searchInput = node;
+            // }}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => handleReset(clearFilters)}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record[dataIndex]
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase()),
+      onFilterDropdownVisibleChange: (visible) => {
+        if (visible) {
+          // setTimeout(() => this.searchInput.select());
+        }
+      },
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text.toString()}
+          />
+        ) : (
+          text
+        ),
+    };
+  }
+
+  function handleSearch(selectedKeys, confirm, dataIndex) {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  }
+
+  function handleReset(clearFilters) {
+    clearFilters();
+    setSearchText("");
+  }
+
   const content = (
     <div>
       <Card>
@@ -233,6 +335,7 @@ function BuktiPembayaran() {
   return (
     <div>
       <DrawerComponents title="Verifikasi Bukti Pembayaran" content={content} />
+      {/* <MenuDrawer title="Bukti Pembayaran" content={content} /> */}
 
       {/* edit modal */}
       <Modal
@@ -243,9 +346,6 @@ function BuktiPembayaran() {
       >
         {selectedKey >= 0 && dataState ? (
           <div>
-            <h4>ID Kupon Pelanggan</h4>
-            <p>{idKuponPelanggan}</p>
-            <WhiteSpace />
             <h4>Tanggal Pembelian</h4>
             <p>{dataState[selectedKey].tanggal_pembelian_kupon}</p>
             <WhiteSpace />
@@ -253,7 +353,14 @@ function BuktiPembayaran() {
             <p>{caraPembayaran(dataState[selectedKey].cara_pembayaran)}</p>
             <WhiteSpace />
             <h4>Harga</h4>
-            <p>{dataState[selectedKey].harga}</p>
+            <p>
+              <NumberFormat
+                value={dataState[selectedKey].harga}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"Rp"}
+              />
+            </p>
             <WhiteSpace />
             <h4>Nama</h4>
             <p>{dataState[selectedKey].nama_lengkap}</p>

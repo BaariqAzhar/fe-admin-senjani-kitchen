@@ -14,6 +14,7 @@ import BuktiPembayaran from "./BuktiPembayaran/BuktiPembayaran";
 import Pengaturan from "./Pengaturan/Pengaturan";
 
 import Coba from "./Coba";
+import MenuDrawer from "./Home/MenuDrawer";
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
       <Switch>
         <Route path="/Coba">
           <Coba />
+        </Route>
+        <Route path="/Coba2">
+          <MenuDrawer />
         </Route>
         <Route path="/Login">
           <Login />
